@@ -1,4 +1,8 @@
-#include "stdafx.h"
+#ifndef PUSHER_H
+#define PUSHER_H
+
+
+//#include "stdafx.h"
 #include<fstream>
 #include<iostream>
 #include<vector>
@@ -30,3 +34,5 @@ public:
 };
 
 #endif
+
+#endif // PUSHER_H

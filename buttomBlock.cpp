@@ -1,11 +1,13 @@
-#include "stdafx.h"
+#include "buttomBlock.h"
+
+//#include "stdafx.h"
 #include<fstream>
 #include<iostream>
 #include<vector>
 #include<array>
 #include <memory>
 
-#include "Block.h"
+#include "block.h"
 #include "buttomBlock.h"
 using namespace std;
 
@@ -39,13 +41,13 @@ void buttom_block::connectConnectors()
 void buttom_block::calculateForces()
 {
 	this->InternalForces();
-	for each (shared_ptr<connector> connect in connectors)
+	for (shared_ptr<connector> connect : connectors)
 	{
 		//this->xForce += connect->returnedForce(this->xPos,this->yPos,this->xVel);
 		//cout << connect->returnedForce(this->xPos, this->yPos, this->xVel) << endl;
 
 		//cout << this->xPos << endl;
-		xForce += connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel);
+		//xForce += connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel);
 		//cout << connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel) << endl;
 	}
 }

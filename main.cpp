@@ -1,21 +1,18 @@
-// main.cpp : Defines the entry point for the console application.
-//
-
-#include "stdafx.h"
-#include<fstream>
-#include<iostream>
-#include<vector>
-#include<array>
+//#include <stdafx.h>
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <array>
 #include <memory>
 
-#include "Block.h"
+#include "block.h"
 #include "interiorBlock.h"
 #include "buttomBlock.h"
 #include "buttomLeftBlock.h"
 
 using namespace std;
 
-const int blockHeight = 5; //Husk å bytte tilsvarende tall i block.cpp!!!!!!!!!!!!!!!
+const int blockHeight = 5; //Husk aa bytte tilsvarende tall i block.cpp!!!!!!!!!!!!!!!
 const int blockWidth = 5;
 const int numBlocks = blockHeight*blockWidth;
 
@@ -26,7 +23,7 @@ double M = 0.12;
 int writeFrequency = 10;
 
 double ddt = 1e-7;
-double tStop = 0.01; //orginalt 0.01
+double tStop = 0.05; //orginalt 0.01
 double t = 0;
 
 //Some arrays
@@ -45,7 +42,7 @@ void writeArrayToFile(ofstream & outFile, double * array, int numBlocks);
 
 /*
 double dt = 1e-7;
-double tStop = 0.01; //orginalt 0.01
+double tStop = 0.01; //orginalt 0.01 g
 double t = 0;
 
 double vPusher = 4e-4;
@@ -79,8 +76,8 @@ int main()
 			{
 				blocks[i][j] = shared_ptr<block>(new interior_block);
 
-				blocks[i][j]->setData(j*d, i*d, blockWidth, L, M,j,i);
-				
+				blocks[i][j]->setData(j*d, i*d, blockWidth, blockHeight, L, M,j,i);
+
 
 			}
 			else if (i == 0 && j == 0)
@@ -88,25 +85,25 @@ int main()
 				blocks[i][j] = shared_ptr<block>(new buttomLeft_block);
 
 
-				blocks[i][j]->setData(j*d, i*d, blockWidth, L, M,j,i);
+				blocks[i][j]->setData(j*d, i*d, blockWidth, blockHeight, L, M,j,i);
 			}
 			else
 			{
 				blocks[i][j] = shared_ptr<block>(new buttom_block);
 
 
-				blocks[i][j]->setData(j*d, i*d, blockWidth, L, M,j,i);
+				blocks[i][j]->setData(j*d, i*d, blockWidth, blockHeight, L, M,j,i);
 			}
-			
+
 		}
 
-		
+
 	}
 
 	for (int i = 0; i < blockHeight; i++)
-	{ 
+	{
 		for (int j = 0; j < blockWidth; j++)
-		{ 
+		{
 			blocks[i][j]->fillNeigbours(blocks);
 		}
 	}
@@ -177,7 +174,7 @@ int main()
 
 
 
-	
+
 	cout << blocks[0][0]->xPos <<"   "<< blocks[0][0]->xForce << endl;
 	cout << blocks[0][1]->xPos << "   " << blocks[0][1]->xForce << endl;
 	cout << blocks[0][2]->xPos << "   " << blocks[0][2]->xForce << endl;
@@ -196,4 +193,3 @@ void writeArrayToFile(ofstream & outFile, double * array, int numBlocks)
 {
 	outFile.write(reinterpret_cast<char*>(array), numBlocks*sizeof(double));
 }
-

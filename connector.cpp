@@ -1,9 +1,10 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include<fstream>
 #include<iostream>
 #include<vector>
 #include<array>
 #include <memory>
+#include<math.h>
 
 #include "connector.h"
 
@@ -31,18 +32,18 @@ int connector::sign(double v)
 
 double connector::calulateConnectorForce(double x, double y, double vx)
 {
-	
+
 	double lenght = sqrt(pow(x - connectorPos, 2) + pow(y - connectorHeight, 2));
 
 	double deltaX = connectorPos - x;
 
 	double springForce = connectorSpringConst*(deltaX);//connectorSpringConst*deltaX*(lenght - d) / lenght;
-	
+
 	double dynamicForce = connDynamicFricCoef*f_ni*sign(vx);
 
 	if (this->state)
 	{
-		if (abs(springForce) < connStaticFricCoeff*f_ni)
+		if ((springForce) < connStaticFricCoeff*f_ni) //Add abs()
 		{
 			return springForce;
 		}
@@ -66,7 +67,7 @@ double connector::calulateConnectorForce(double x, double y, double vx)
 		{
 			connectorPos = x;
 			timeMelted = 0;
-			
+
 			state = true;
 			return springForce;
 		}
@@ -77,11 +78,11 @@ double connector::returnedForce(double x, double y, double vx)
 {
 	double deltaX = connectorPos - x;
 
-	
+
 
 	double force = this->calulateConnectorForce(x, y, vx);
 
-	
+
 	if (deltaX < d)
 	{
 		//return 0;
@@ -93,7 +94,7 @@ double connector::returnedForce(double x, double y, double vx)
 		inegrateConnector(force);
 		return force;
 	}
-	
+
 }
 
 void connector::inegrateConnector(double force)

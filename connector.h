@@ -1,11 +1,16 @@
+#ifndef CONNECTOR_H
+#define CONNECTOR_H
+
+
 #pragma once
-#include "stdafx.h"
+//#include "stdafx.h"
 #include<fstream>
 #include<iostream>
 #include<vector>
 #include<array>
 #include <memory>
 #include <stdlib.h>
+#include <math.h>
 
 using namespace std;
 
@@ -24,7 +29,7 @@ public:
 	double connectorHeight = d/2;
 
 	double connectorMass = 0.1;
-	
+
 	double f_ni = 500;//1920. / 70.;
 	double connectorSpringConst = sqrt((39.2e9)*(f_ni));
 
@@ -36,11 +41,13 @@ public:
 
 
 	int sign(double v);
-	
-	
+
+
 	connector(double x, double dt);
 
 	double calulateConnectorForce(double x, double y, double vx);
 	double returnedForce(double x, double y, double vx);
 	void inegrateConnector(double force);
 };
+
+#endif // CONNECTOR_H

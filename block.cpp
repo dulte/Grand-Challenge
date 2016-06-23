@@ -1,17 +1,18 @@
-#include "stdafx.h"
+#include "block.h"
+//#include "stdafx.h"
 #include<fstream>
 #include<iostream>
 #include<vector>
 #include<array>
 #include <memory>
-
-#include "Block.h"
+#include <math.h>
+#include <algorithm>
 
 using namespace std;
 
-const int blockHeight = 5;
-const int blockWidth = 5;
-const int numBlocks = blockHeight*blockWidth;
+//const int blockHeight = 5;
+//const int blockWidth = 5;
+//const int numBlocks = blockHeight*blockWidth;
 
 double dt = 1e-7;
 
@@ -38,12 +39,14 @@ double m = M / numBlocks;
 
 	//block(const block&) = default;
 
-	void block::setData(double x, double y, const int numberOfBlocks_, double L_, double M_, int xID_, int yID_)
+	void block::setData(double x, double y, const int width_, const int heigth_, double L_, double M_, int xID_, int yID_)
 	{
 		xPos = x;
 		yPos = y;
 		springAttachmentPoint = x;
-		numberOfBlocks = numberOfBlocks_;
+		blockHeight = heigth_;
+		blockWidth = width_;
+		numberOfBlocks = width_;
 		blockL = L_;
 		blockM = M_;
 
@@ -56,7 +59,7 @@ double m = M / numBlocks;
 
 	void block::fillNeigbours(vector<vector<shared_ptr<block>>> &blocks)
 	{
-		
+
 		for (int m = int(yID) - 1; m <= int(yID) + 1; m++)
 		{
 			for (int n = int(xID) - 1; n <= int(xID) + 1; n++)
@@ -66,10 +69,10 @@ double m = M / numBlocks;
 				}
 				else
 				{
-					
+
 					if ((m >= 0 && m <= blockHeight -1) && (n >= 0 && n <= blockWidth -1))
 					{
-						
+
 						neighbours.push_back(blocks[m][n]);
 
 						double len = lenght(xID, yID, blocks[m][n]->xID, blocks[m][n]->yID);
@@ -83,14 +86,14 @@ double m = M / numBlocks;
 							neighbourSpringConst.push_back(0.5);
 						}
 					}
-					
+
 				}
 
 			}
 
 		}
 
-		
+
 	}
 
 
@@ -108,7 +111,7 @@ double m = M / numBlocks;
 		{
 			return k*(len - d)*deltaY / len;
 		}
-		
+
 	}
 
 	double block::dampningForce(double nu, double vx, double vy, int komponent)
@@ -125,7 +128,7 @@ double m = M / numBlocks;
 				return -nu*(deltaX);
 			}
 			else if (komponent == 1)
-			{  
+			{
 				return -nu*(deltaY);
 			}
 		}
@@ -137,7 +140,7 @@ double m = M / numBlocks;
 		xForce = 0;
 		yForce = 0;
 		int i = 0;
-		for each (shared_ptr<block> neigbour in neighbours)
+		for (shared_ptr<block> neigbour : neighbours)
 		{
 			double k_ = neighbourSpringConst[i] * k;
 			double nu_ = neighbourSpringConst[i] * nu;
