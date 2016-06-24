@@ -19,9 +19,10 @@ buttom_block::buttom_block()
 
 void buttom_block::connectConnectors()
 {
+    //Makes a given number of connectors per block
 	for (int i = 1; i <= numberOfConnectors; i++)
 	{
-		double pos = this->xPos + i*connectorInterval;
+		double pos = this->xPos;// + i*connectorInterval;
 		this->connectors.push_back(shared_ptr<connector>(new connector(pos, dt)));
 	}
 }
@@ -35,7 +36,7 @@ void buttom_block::calculateForces()
 		//cout << connect->returnedForce(this->xPos, this->yPos, this->xVel) << endl;
 
 		//cout << this->xPos << endl;
-		//xForce += connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel);
+		xForce += connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel);
 		//cout << connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel) << endl;
 	}
 }

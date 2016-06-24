@@ -5,6 +5,7 @@
 #include<array>
 #include <memory>
 #include<math.h>
+#include <cmath>
 
 #include "connector.h"
 
@@ -12,9 +13,9 @@ using namespace std;
 
 connector::connector(double x, double dt)
 {
-	connectorPos = x;
+	connectorPos = x; //Vestigial, and will be changed
 	connectorDt = dt;
-	timeToStick += randomEpsilon;
+	//timeToStick += randomEpsilon;
 }
 
 int connector::sign(double v)
@@ -37,30 +38,33 @@ double connector::calulateConnectorForce(double x, double y, double vx)
 
 	double deltaX = connectorPos - x;
 
+    //spring force is now calculated with deltaX, this is a naive model and will be the first thing to be changed
 	double springForce = connectorSpringConst*(deltaX);//connectorSpringConst*deltaX*(lenght - d) / lenght;
 
-	double dynamicForce = connDynamicFricCoef*f_ni*sign(vx);
+	double dynamicForce = -connDynamicFricCoef*f_ni*sign(vx);
 
-	if (this->state)
+    //return dynamicForce;
+
+	if (state)
 	{
-		if ((springForce) < connStaticFricCoeff*f_ni) //Add abs()
+		if (abs(springForce) < connStaticFricCoeff*f_ni)
 		{
 			return springForce;
 		}
 		else
 		{
 			//state = true;
-			this->state = false;
+			state = false;
 			//cout << "hei" << " " << dynamicForce << endl;
 			return dynamicForce;
 		}
 	}
-	else if (!this->state)
+	else if (!state)
 	{
 		if (timeMelted < timeToStick)
 		{
 			timeMelted += connectorDt;
-			connectorPos = x;
+			//connectorPos = x;
 			return dynamicForce;
 		}
 		else

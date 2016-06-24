@@ -17,6 +17,8 @@ using namespace std;
 struct connector
 {
 public:
+
+    //These variables will be read from config
 	double timeMelted = 0; //Tiden connectoren har vaert smelted
 	double timeToStick = 0.0002; //Tiden det tar foer connectoren fester seg igjen
 	bool state = true; //Om connectoren er festet eller ikke

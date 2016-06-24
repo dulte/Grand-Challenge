@@ -85,12 +85,14 @@ int main()
 
 	vector<vector<shared_ptr<block>>> blocks;
 
-	blocks.resize(blockWidth);
+	blocks.resize(blockHeight);
 
-	for (int m = 0; m < blockWidth; m++)
+	for (int m = 0; m < blockHeight; m++)
 	{
-		blocks[m].resize(blockHeight);
+		blocks[m].resize(blockWidth);
 	}
+
+
 
 	for (int i = 0; i < blockHeight; i++)
 	{
@@ -124,6 +126,7 @@ int main()
 
 
 	}
+
 
 	//Gives all the blocks lists over their neighbors(will be optimized)
 

@@ -1,10 +1,10 @@
-height 5
-width 5
+height 1
+width 10
 L 0.14
 M 0.12
 k 2.3e6
 nu 10.0
 dt 1e-7
-tStop 0.05
+tStop 0.5
 writeFrequency 10
-test 0
+test 1
