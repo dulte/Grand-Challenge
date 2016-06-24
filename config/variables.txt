@@ -1,0 +1,10 @@
+height 5
+width 5
+L 0.14
+M 0.12
+k 2.3e6
+nu 10.0
+dt 1e-7
+tStop 0.05
+writeFrequency 10
+test 0

@@ -1,16 +1,18 @@
 # depslib dependency file v1.0
-1466711653 source:c:\users\daniel\documents\python prog\codeblock\gc\main\main.cpp
+1466791445 source:c:\users\daniel\documents\python prog\codeblock\gc\main\main.cpp
 	<fstream>
 	<iostream>
 	<vector>
 	<array>
 	<memory>
+	<time.h>
 	"block.h"
 	"interiorBlock.h"
 	"buttomBlock.h"
 	"buttomLeftBlock.h"
+	"getVar.h"
 
-1466711561 c:\users\daniel\documents\python prog\codeblock\gc\main\include\block.h
+1466784113 c:\users\daniel\documents\python prog\codeblock\gc\main\include\block.h
 	<fstream>
 	<iostream>
 	<vector>
@@ -25,7 +27,7 @@
 	<memory>
 	"block.h"
 
-1466706423 c:\users\daniel\documents\python prog\codeblock\gc\main\include\buttomblock.h
+1466784054 c:\users\daniel\documents\python prog\codeblock\gc\main\include\buttomblock.h
 	<fstream>
 	<iostream>
 	<vector>
@@ -43,7 +45,7 @@
 	<stdlib.h>
 	<math.h>
 
-1466706427 c:\users\daniel\documents\python prog\codeblock\gc\main\include\buttomleftblock.h
+1466783898 c:\users\daniel\documents\python prog\codeblock\gc\main\include\buttomleftblock.h
 	<fstream>
 	<iostream>
 	<vector>
@@ -59,7 +61,7 @@
 	<array>
 	<memory>
 
-1466711471 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\block.cpp
+1466784169 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\block.cpp
 	"block.h"
 	<fstream>
 	<iostream>
@@ -68,9 +70,9 @@
 	<memory>
 	<math.h>
 	<algorithm>
+	"getVar.h"
 
-1466709546 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\buttomblock.cpp
-	"buttomBlock.h"
+1466783769 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\buttomblock.cpp
 	<fstream>
 	<iostream>
 	<vector>
@@ -79,7 +81,7 @@
 	"block.h"
 	"buttomBlock.h"
 
-1466708163 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\buttomleftblock.cpp
+1466783905 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\buttomleftblock.cpp
 	<fstream>
 	<iostream>
 	<vector>
@@ -97,7 +99,7 @@
 	<math.h>
 	"connector.h"
 
-1466708261 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\interiorblock.cpp
+1466784016 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\interiorblock.cpp
 	<fstream>
 	<iostream>
 	<vector>
@@ -113,4 +115,17 @@
 	<array>
 	<memory>
 	"pusher.h"
+
+1466716139 c:\users\daniel\documents\python prog\codeblock\gc\main\include\getvar.h
+	<iostream>
+	<fstream>
+	<vector>
+	<sstream>
+
+1466783508 source:c:\users\daniel\documents\python prog\codeblock\gc\main\src\getvar.cpp
+	"getVar.h"
+	<iostream>
+	<fstream>
+	<vector>
+	<sstream>
 

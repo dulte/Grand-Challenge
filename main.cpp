@@ -1,35 +1,17 @@
-//#include <stdafx.h>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <array>
 #include <memory>
+#include <time.h>
 
 #include "block.h"
 #include "interiorBlock.h"
 #include "buttomBlock.h"
 #include "buttomLeftBlock.h"
+#include "getVar.h"
 
 using namespace std;
-
-const int blockHeight = 5; //Husk aa bytte tilsvarende tall i block.cpp!!!!!!!!!!!!!!!
-const int blockWidth = 5;
-const int numBlocks = blockHeight*blockWidth;
-
-double L = 0.14; 			// Physical length of block chain
-double d = L / (blockWidth - 1); 	// Distance between blocks in block chain
-double M = 0.12;
-
-int writeFrequency = 10;
-
-double ddt = 1e-7;
-double tStop = 0.05; //orginalt 0.01
-double t = 0;
-
-//Some arrays
-double positions[blockWidth];
-double forces[blockWidth];
-double state[blockWidth];
 
 // Create output streams
 ofstream outFilePositions("output/positions.bin", ios::out | ios::binary);
@@ -39,6 +21,7 @@ ofstream outFileParameters("output/parameters.txt");
 
 //Some functions
 void writeArrayToFile(ofstream & outFile, double * array, int numBlocks);
+int checkProgress(double time, double tStop, int percent, double currentTime, double start);
 
 /*
 double dt = 1e-7;
@@ -56,8 +39,50 @@ double M = 0.12;
 double m = M / numBlocks;
 */
 
+
+
+
 int main()
 {
+    //Reads variables from config-file:
+    getVar *pGetVarMain = new getVar();
+
+    const int blockHeight = int(pGetVarMain->get("height"));
+    const int blockWidth = int(pGetVarMain->get("width"));
+    const int numBlocks = blockHeight*blockWidth;
+
+    double L = pGetVarMain->get("L");
+    double d = L / (blockWidth - 1);
+
+    int writeFrequency = int(pGetVarMain->get("writeFrequency"));
+
+    double dt = pGetVarMain->get("dt");
+    double tStop = pGetVarMain->get("tStop"); //orginalt 0.01
+    double t = 0;
+
+    //Some variables used for fun things
+    time_t timer;
+    int percent = 0;
+    bool isTesting = (pGetVarMain->get("test"));
+    int testTime = 60;
+
+
+    delete pGetVarMain;
+
+    //Some arrays
+    double positions[blockWidth];
+    double forces[blockWidth];
+    double state[blockWidth];
+
+
+
+
+
+
+    //Makes the 2D-vector that holds the block-objects
+
+    cout << "Beginning initialization" << endl;
+
 	vector<vector<shared_ptr<block>>> blocks;
 
 	blocks.resize(blockWidth);
@@ -76,7 +101,7 @@ int main()
 			{
 				blocks[i][j] = shared_ptr<block>(new interior_block);
 
-				blocks[i][j]->setData(j*d, i*d, blockWidth, blockHeight, L, M,j,i);
+				blocks[i][j]->setData(j*d, i*d,j,i);
 
 
 			}
@@ -85,20 +110,22 @@ int main()
 				blocks[i][j] = shared_ptr<block>(new buttomLeft_block);
 
 
-				blocks[i][j]->setData(j*d, i*d, blockWidth, blockHeight, L, M,j,i);
+				blocks[i][j]->setData(j*d, i*d,j,i);
 			}
 			else
 			{
 				blocks[i][j] = shared_ptr<block>(new buttom_block);
 
 
-				blocks[i][j]->setData(j*d, i*d, blockWidth, blockHeight, L, M,j,i);
+				blocks[i][j]->setData(j*d, i*d,j,i);
 			}
 
 		}
 
 
 	}
+
+	//Gives all the blocks lists over their neighbors(will be optimized)
 
 	for (int i = 0; i < blockHeight; i++)
 	{
@@ -108,17 +135,40 @@ int main()
 		}
 	}
 
-	int counter = 0;
 
+    /*
 	cout << blocks[0][0]->xPos << "   " << blocks[0][0]->xForce << endl;
 	cout << blocks[0][1]->xPos << "   " << blocks[0][1]->xForce << endl;
 	cout << blocks[0][2]->xPos << "   " << blocks[0][2]->xForce << endl;
 	cout << blocks[0][blockWidth - 2]->xPos << "   " << blocks[0][blockWidth - 2]->xForce << endl;
 	cout << blocks[0][blockWidth - 1]->xPos << "   " << blocks[0][blockWidth - 1]->xForce << endl;
 	cout << endl;
+    */
+
+
+    //Main integration loop
+
+    cout << "Beginning calculations" << endl;
+
+    double timeStarted = time(&timer);
+    int counter = 0;
 
 	while (t<tStop)
 	{
+
+        //For testing and showing progression, comment out for somewhat faster running time
+	    if (isTesting)
+        {
+            if(int(time(&timer)-timeStarted)>=testTime){
+                cout << "I am estimating it will take approximately " << int(double(time(&timer)-timeStarted)/(t/tStop)) << " Sec" << endl << "Test ended" << endl;;
+                break;
+            }
+        }
+        else{
+            percent = checkProgress(t, tStop, percent, time(&timer), timeStarted); // Prints the progression
+        }
+
+
 		for (int i = 0; i < blockHeight; i++)
 		{
 			for (int j = 0; j < blockWidth; j++)
@@ -128,6 +178,7 @@ int main()
 			}
 		}
 
+        //Integrates (For now using Euler-Cromer, will be changed)
 		for (int i = 0; i < blockHeight; i++)
 		{
 			for (int j = 0; j < blockWidth; j++)
@@ -138,7 +189,7 @@ int main()
 		}
 
 
-
+        //Makes an array which holds the whether or not the springs are attached and static friction is active
 		for (int j = 0; j < blockWidth; j++)
 		{
 			positions[j] = blocks[0][j]->xPos;
@@ -150,6 +201,7 @@ int main()
 
 		}
 
+        //Writes the data to files
 		if ((counter%writeFrequency) == 0)
 		{
 			writeArrayToFile(outFilePositions, positions, blockWidth);
@@ -158,13 +210,13 @@ int main()
 		}
 
 		counter++;
-		t += ddt;
+		t += dt;
 
 	}
 
 	// Output parameters to file
 	outFileParameters << "nx " << blockWidth << "\n";
-	outFileParameters << "dt " << ddt << "\n";
+	outFileParameters << "dt " << dt << "\n";
 	// .. fill in the rest of the parameters
 
 	// Close output files
@@ -192,4 +244,13 @@ int main()
 void writeArrayToFile(ofstream & outFile, double * array, int numBlocks)
 {
 	outFile.write(reinterpret_cast<char*>(array), numBlocks*sizeof(double));
+}
+
+int checkProgress(double time, double tStop, int percent,double curretenTime, double start)
+{
+    if (int((time/tStop)*100)%10 == 0 && int((time/tStop)*100) != percent  ){
+            cout << int((time/tStop)*100) << "% done| " << curretenTime- start << " Sec used| estimated " << round((curretenTime - start)/(time/tStop) - (curretenTime - start)) << " Sec left" << endl;
+            return int((time/tStop)*100);
+    }
+
 }
