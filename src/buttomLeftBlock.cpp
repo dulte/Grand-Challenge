@@ -22,7 +22,8 @@ void buttomLeft_block::calculateForces()
 	this->xForce += pusherObj->pusherForce(0, this->xPos);
     for (shared_ptr<connector> connect : connectors)
 	{
-        fricForce = connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel);
+	    yForce += normalForce();
+        fricForce = connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel, this->normalForce());
 		xForce += fricForce;
 	}
 	pusherObj->MovePusher();

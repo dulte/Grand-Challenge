@@ -12,11 +12,12 @@
 
 using namespace std;
 
-connector::connector(double x, double dt)
+connector::connector(double x, double dt, bool isOneDim)
 {
 	connectorPos = x; //Vestigial, and will be changed
     //timeToStick += randomEpsilon;
 
+    useNormalForce = isOneDim;
 
 	getVar *connVarGet = new getVar();
 
@@ -47,18 +48,29 @@ int connector::sign(double v)
 	else { return 0; }
 }
 
-double connector::calulateConnectorForce(double x, double y, double vx)
+double connector::calulateConnectorForce(double x, double y, double vx, double fy)
 {
+    double normalForce = 0;
+
+    if (useNormalForce)
+    {
+        normalForce = f_ni;
+    }
+    else
+    {
+
+        normalForce = fy;
+    }
     double lenght = sqrt(pow(x-connectorPos,2) + pow(connectorHeight-y,2));
 
     double deltaX = x-connectorPos;
 
     double springForce = -connectorSpringConst*deltaX; //connectorSpringConst*deltaX*(d-lenght)/lenght;
-    double dynamicForce = -connDynamicFricCoef*f_ni*sign(vx);
+    double dynamicForce = -connDynamicFricCoef*normalForce*sign(vx);
 
     if(state)
     {
-        if (abs(springForce) < connStaticFricCoeff*f_ni)
+        if (abs(springForce) < connStaticFricCoeff*normalForce)
         {
             return springForce;
         }
@@ -88,7 +100,7 @@ double connector::calulateConnectorForce(double x, double y, double vx)
 
 }
 
-double connector::returnedForce(double x, double y, double vx)
+double connector::returnedForce(double x, double y, double vx, double fy)
 {
 	double lenght = sqrt(pow(x-connectorPos,2) + pow(connectorHeight-y,2));
 
@@ -99,7 +111,7 @@ double connector::returnedForce(double x, double y, double vx)
 	}
 	else
 	{
-		return this->calulateConnectorForce(x, y, vx);;
+		return this->calulateConnectorForce(x, y, vx, fy);;
 	}
 
 }

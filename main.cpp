@@ -9,6 +9,7 @@
 #include "interiorBlock.h"
 #include "buttomBlock.h"
 #include "buttomLeftBlock.h"
+#include "topBlock.h"
 #include "getVar.h"
 
 using namespace std;
@@ -68,6 +69,8 @@ int main()
     bool isTesting = (pGetVarMain->get("test"));
     int testTime = 60;
 
+    bool isOneDim = false;
+    if (blockHeight == 1){isOneDim = true;} //Checks if the block is only 1 block high(to make sure blocks are not top and bottom)
 
     delete pGetVarMain;
 
@@ -102,7 +105,47 @@ int main()
 	{
 		for (int j = 0; j < blockWidth; j++)
 		{
+		    if ((i == (blockHeight - 1)) && !isOneDim)
+            {
 
+                blocks[i][j] = shared_ptr<block>(new top_block);
+                blocks[i][j]->setData(j*d, i*d,j,i);
+
+
+            }
+            else if (i == 0)
+            {
+                if (j == 0)
+                {
+                     blocks[i][j] = shared_ptr<block>(new buttomLeft_block);
+
+
+                     blocks[i][j]->setData(j*d, i*d,j,i);
+                     blocks[i][j]->isOneDim(isOneDim);
+                     blocks[i][j]->connectConnectors();
+
+
+                }
+                else
+                {
+                     blocks[i][j] = shared_ptr<block>(new buttom_block);
+
+
+                     blocks[i][j]->setData(j*d, i*d,j,i);
+                     blocks[i][j]->isOneDim(isOneDim);
+                     blocks[i][j]->connectConnectors();
+
+
+                }
+            }
+            else
+            {
+                blocks[i][j] = shared_ptr<block>(new interior_block);
+
+				blocks[i][j]->setData(j*d, i*d,j,i);
+            }
+
+            /*
 			if ((j > 0 && j < blockWidth - 1) && (i > 0 && i < blockHeight - 1))
 			{
 				blocks[i][j] = shared_ptr<block>(new interior_block);
@@ -111,6 +154,14 @@ int main()
 
 
 			}
+			else if (i == (blockHeight - 2))
+            {
+                if (!isOneDim)
+                {
+                    blocks[i][j] = shared_ptr<block>(new top_block);
+                    blocks[i][j]->setData(j*d, i*d,j,i);
+                }
+            }
 			else if (i == 0 && j == 0)
 			{
 				blocks[i][j] = shared_ptr<block>(new buttomLeft_block);
@@ -128,6 +179,7 @@ int main()
 				blocks[i][j]->connectConnectors();
 			}
 
+            */
 		}
 
 
@@ -196,26 +248,19 @@ int main()
 
 			}
 		}
-
+        cout << blocks[0][0]->yPos << endl;
 
         //Makes an array which holds the whether or not the springs are attached and static friction is active
 		for (int j = 0; j < blockWidth; j++)
 		{
 			positions[j] = blocks[0][j]->xPos;
-			forces[j] = blocks[0][j]->xForce;
+			forces[j] = blocks[0][j]->xForce;  //Change back to x!
 			velocity[j] = blocks[0][j]->xVel;
 			state[j] = int(blocks[0][j]->returnState());
 			if ((blocks[0][j]->returnFricForce())>-0.005){
                     friction[j] = blocks[0][j]->returnFricForce();
 				}
 				else{friction[j] = -0.005;}
-            /*
-			if (blocks[0][j]->type == blockType::buttom)
-			{
-				state[j] = int(blocks[0][j]->returnState());
-
-			}
-			*/
 
 		}
 
