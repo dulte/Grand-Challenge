@@ -88,5 +88,7 @@ public:
 	virtual void calculateForces();
 
 	virtual bool returnState();
+    virtual void connectConnectors();
+    virtual double returnFricForce();
 
 };

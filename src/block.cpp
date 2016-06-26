@@ -54,6 +54,8 @@ double m = M / numBlocks;
 
 	};
 	bool block::returnState() { return false; };
+	void block::connectConnectors(){};
+	double block::returnFricForce(){return 0;};
 
 
 
@@ -190,4 +192,5 @@ double m = M / numBlocks;
 	};
 
 	void block::calculateForces() {};
+
 

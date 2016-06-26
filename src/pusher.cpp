@@ -6,13 +6,22 @@
 #include <memory>
 
 #include "pusher.h"
+#include "getVar.h"
 
 using namespace std;
 
 
 pusher::pusher()
 {
+    getVar *pGetVarPusher = new getVar();
+
+    vPusher = pGetVarPusher->get("vPusher");
+    kPusher = pGetVarPusher->get("kPusher");
+    dt = pGetVarPusher->get("dt");
+
 	pusherPosition = 0;
+
+	delete pGetVarPusher;
 }
 
 double pusher::pusherForce(int komponent, double x)
@@ -24,5 +33,5 @@ double pusher::pusherForce(int komponent, double x)
 
 void pusher::MovePusher()
 {
-	pusherPosition += vPusher*Pdt;
+	pusherPosition += vPusher*dt;
 }

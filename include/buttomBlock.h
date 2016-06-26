@@ -19,11 +19,13 @@ class buttom_block :public block
 public:
 	buttom_block();
 	int numberOfConnectors = 1;
+	double fricForce = 0;
 	double connectorInterval = d / numberOfConnectors;
 	vector<shared_ptr<connector>> connectors;
 
 	void connectConnectors();
 	void calculateForces();
 	bool returnState();
+	double returnFricForce();
 
 };

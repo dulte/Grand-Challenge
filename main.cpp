@@ -17,6 +17,8 @@ using namespace std;
 ofstream outFilePositions("output/positions.bin", ios::out | ios::binary);
 ofstream outFileForce("output/force.bin", ios::out | ios::binary);
 ofstream outFileState("output/state.bin", ios::out | ios::binary);
+ofstream outFileFriction("output/friction.bin", ios::out | ios::binary);
+ofstream outFileVelocity("output/velocity.bin", ios::out | ios::binary);
 ofstream outFileParameters("output/parameters.txt");
 
 //Some functions
@@ -73,6 +75,8 @@ int main()
     double positions[blockWidth];
     double forces[blockWidth];
     double state[blockWidth];
+    double friction[blockWidth];
+    double velocity[blockWidth];
 
 
 
@@ -113,6 +117,7 @@ int main()
 
 
 				blocks[i][j]->setData(j*d, i*d,j,i);
+				blocks[i][j]->connectConnectors();
 			}
 			else
 			{
@@ -120,6 +125,7 @@ int main()
 
 
 				blocks[i][j]->setData(j*d, i*d,j,i);
+				blocks[i][j]->connectConnectors();
 			}
 
 		}
@@ -197,10 +203,19 @@ int main()
 		{
 			positions[j] = blocks[0][j]->xPos;
 			forces[j] = blocks[0][j]->xForce;
+			velocity[j] = blocks[0][j]->xVel;
+			state[j] = int(blocks[0][j]->returnState());
+			if ((blocks[0][j]->returnFricForce())>-0.005){
+                    friction[j] = blocks[0][j]->returnFricForce();
+				}
+				else{friction[j] = -0.005;}
+            /*
 			if (blocks[0][j]->type == blockType::buttom)
 			{
 				state[j] = int(blocks[0][j]->returnState());
+
 			}
+			*/
 
 		}
 
@@ -210,6 +225,8 @@ int main()
 			writeArrayToFile(outFilePositions, positions, blockWidth);
 			writeArrayToFile(outFileForce, forces, blockWidth);
 			writeArrayToFile(outFileState, state, blockWidth);
+			writeArrayToFile(outFileFriction,friction,blockWidth);
+			writeArrayToFile(outFileVelocity,velocity,blockWidth);
 		}
 
 		counter++;

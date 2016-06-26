@@ -19,6 +19,7 @@ class interior_block:public block
 public:
 	interior_block();
 	void calculateForces();
+
 };
 
 

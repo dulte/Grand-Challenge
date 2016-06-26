@@ -12,10 +12,10 @@
 
 #include "block.h"
 #include "pusher.h"
-
+#include "buttomBlock.h"
 using namespace std;
 
-class buttomLeft_block :public block
+class buttomLeft_block :public buttom_block
 {
 public:
 	double pusherPosition;

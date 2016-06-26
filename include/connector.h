@@ -20,23 +20,25 @@ public:
 
     //These variables will be read from config
 	double timeMelted = 0; //Tiden connectoren har vaert smelted
-	double timeToStick = 0.0002; //Tiden det tar foer connectoren fester seg igjen
+	double timeToStick;// = 0.0002; //Tiden det tar foer connectoren fester seg igjen
 	bool state = true; //Om connectoren er festet eller ikke
 	double randomEpsilon = (rand() % 100) / (1e-5); //En lite, tilfeldig varianse til tiden det tar connectoren aa feste seg igjen
-	double d = 0.0001; //Likevektslengde til connectoren
+
 
 	double connectorPos;
 	double connectorVel = 0;
 	double connectorForce = 0;
-	double connectorHeight = d/2;
+	double connectorHeight = .000;
+	double connectorEquilibriumX = .0001;
+	double d = sqrt(pow(connectorEquilibriumX,2)+pow(connectorHeight,2)); //Likevektslengde til connectoren
 
-	double connectorMass = 0.1;
+	double connectorMass;
 
-	double f_ni = 500;//1920. / 70.;
-	double connectorSpringConst = sqrt((39.2e9)*(f_ni));
+	double f_ni;// = 1920. / 70.;
+	double connectorSpringConst;// = sqrt((39.2e9)*(f_ni));
 
-	double connStaticFricCoeff = 0.4;
-	double connDynamicFricCoef = 0.17;
+	double connStaticFricCoeff;// = 0.4;
+	double connDynamicFricCoef;// = 0.17;
 
 	double connectorDt;
 

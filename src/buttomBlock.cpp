@@ -14,7 +14,7 @@ using namespace std;
 buttom_block::buttom_block()
 {
 	type = blockType::buttom;
-	this->connectConnectors();
+	//this->connectConnectors();
 }
 
 void buttom_block::connectConnectors()
@@ -24,6 +24,7 @@ void buttom_block::connectConnectors()
 	{
 		double pos = this->xPos;// + i*connectorInterval;
 		this->connectors.push_back(shared_ptr<connector>(new connector(pos, dt)));
+
 	}
 }
 
@@ -36,7 +37,8 @@ void buttom_block::calculateForces()
 		//cout << connect->returnedForce(this->xPos, this->yPos, this->xVel) << endl;
 
 		//cout << this->xPos << endl;
-		xForce += connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel);
+		fricForce = connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel);
+		xForce += fricForce;
 		//cout << connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel) << endl;
 	}
 }
@@ -44,5 +46,10 @@ void buttom_block::calculateForces()
 bool buttom_block::returnState()
 {
 	return connectors[0]->state;
+}
+
+double buttom_block::returnFricForce()
+{
+    return this->fricForce;
 }
 

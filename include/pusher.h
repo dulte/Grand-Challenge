@@ -17,10 +17,10 @@
 struct pusher
 {
 public:
-	double vPusher = 4e-3;
-	double kPusher = 4e6;
+	double vPusher;// = 4e-4;
+	double kPusher;// = 4e6;
 
-	double Pdt = 1e-7;
+	double dt;// = 1e-7;
 
 	double pusherPosition;
 
