@@ -67,7 +67,7 @@ int main()
     time_t timer;
     int percent = 0;
     bool isTesting = (pGetVarMain->get("test"));
-    int testTime = 60;
+    int testTime = 10;
 
     bool isOneDim = false;
     if (blockHeight == 1){isOneDim = true;} //Checks if the block is only 1 block high(to make sure blocks are not top and bottom)
@@ -248,7 +248,7 @@ int main()
 
 			}
 		}
-        cout << blocks[0][0]->yPos << endl;
+        //cout << blocks[0][0]->yPos << endl;
 
         //Makes an array which holds the whether or not the springs are attached and static friction is active
 		for (int j = 0; j < blockWidth; j++)
