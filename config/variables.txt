@@ -1,11 +1,10 @@
-height 2
-width 70
+height 37
+width 51
 L 0.14
 M 0.12
 k 2.3e6
-nu 10.0
 dt 1e-7
-tStop .1
+tStop .04
 writeFrequency 100
 test 0
 

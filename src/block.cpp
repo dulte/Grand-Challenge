@@ -26,7 +26,7 @@ using namespace std;
 
 
         k = pGetVar->get("k");
-        nu = pGetVar->get("nu");
+
         dt = pGetVar->get("dt");
 
         L = pGetVar->get("L");
@@ -34,6 +34,7 @@ using namespace std;
 
         d = L / (numberOfBlocks - 1); 	// Distance between blocks in block chain
 		m = M / numberOfBlocks;
+		nu = sqrt(0.1*k*m);
 
         delete pGetVar; //By deleting this pointer the destructor should close the files
 
@@ -152,7 +153,7 @@ using namespace std;
 			double eps = 0.05;
 			double d_;
 
-			if (abs(neighbourSpringConst[i] - 0.5) < eps)
+			if (fabs(neighbourSpringConst[i] - 0.5) < eps)
 			{
 				d_ = sqrt(2)*d;
 			}
@@ -178,5 +179,3 @@ using namespace std;
 	};
 
 	void block::calculateForces() {};
-
-
