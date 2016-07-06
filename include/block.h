@@ -85,10 +85,14 @@ public:
 	double dampningForce(double nu, double vx, double vy, int komponent);
 	void InternalForces();
 	void integrate();
+
 	virtual void calculateForces();
 
 	virtual bool returnState();
     virtual void connectConnectors();
     virtual double returnFricForce();
+    virtual void isOneDim(bool _oneDim);
+    virtual double normalForce();
+    virtual double returnPusherForce();
 
 };

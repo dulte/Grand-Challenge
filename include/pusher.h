@@ -20,6 +20,8 @@ public:
 	double vPusher;// = 4e-4;
 	double kPusher;// = 4e6;
 
+    double pusherEqD;
+
 	double dt;// = 1e-7;
 
 	double pusherPosition;

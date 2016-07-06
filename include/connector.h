@@ -10,7 +10,7 @@
 #include<array>
 #include <memory>
 #include <stdlib.h>
-#include <math.h>
+#include <cmath>
 
 using namespace std;
 
@@ -22,8 +22,8 @@ public:
 	double timeMelted = 0; //Tiden connectoren har vaert smelted
 	double timeToStick;// = 0.0002; //Tiden det tar foer connectoren fester seg igjen
 	bool state = true; //Om connectoren er festet eller ikke
-	double randomEpsilon = (rand() % 100) / (1e-5); //En lite, tilfeldig varianse til tiden det tar connectoren aa feste seg igjen
-
+	double randomEpsilon = (rand() % 100) / (5e4); //En lite, tilfeldig varianse til tiden det tar connectoren aa feste seg igjen
+    bool useNormalForce;
 
 	double connectorPos;
 	double connectorVel = 0;
@@ -47,10 +47,10 @@ public:
 	int sign(double v);
 
 
-	connector(double x, double dt);
+	connector(double x, double dt, bool isOneDim);
 
-	double calulateConnectorForce(double x, double y, double vx);
-	double returnedForce(double x, double y, double vx);
+	double calulateConnectorForce(double x, double y, double vx, double fy);
+	double returnedForce(double x, double y, double vx, double fy);
 	void inegrateConnector(double force);
 };
 

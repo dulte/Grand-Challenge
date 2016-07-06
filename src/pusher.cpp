@@ -19,7 +19,8 @@ pusher::pusher()
     kPusher = pGetVarPusher->get("kPusher");
     dt = pGetVarPusher->get("dt");
 
-	pusherPosition = 0;
+	pusherPosition = -0.01;
+	pusherEqD = -pusherPosition;
 
 	delete pGetVarPusher;
 }
@@ -27,7 +28,8 @@ pusher::pusher()
 double pusher::pusherForce(int komponent, double x)
 {
 
-	double pForce = kPusher*(pusherPosition - x);
+	double pForce = -kPusher*((x-pusherPosition) - pusherEqD);
+
 	return pForce;
 }
 

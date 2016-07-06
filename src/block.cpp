@@ -5,26 +5,11 @@
 #include<vector>
 #include<array>
 #include <memory>
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 #include "getVar.h"
 
 using namespace std;
-
-//const int blockHeight = 5;
-//const int blockWidth = 5;
-//const int numBlocks = blockHeight*blockWidth;
-/*
-double dt = 1e-7;
-
-double nu = sqrt(0.1e3);    //Dampning coefficient
-double k = 2.3e6; 			// Stiffness between blocks
-
-double L = 0.14; 			// Physical length of block chain
-double d = L / (numBlocks - 1); 	// Distance between blocks in block chain
-double M = 0.12;
-double m = M / numBlocks;
-*/
 
 
 
@@ -36,19 +21,21 @@ double m = M / numBlocks;
 
         blockHeight = int(pGetVar->get("height"));
         blockWidth = int(pGetVar->get("width"));
-        numberOfBlocks = blockWidth;
+        numberOfBlocks = blockWidth*blockHeight;
 
 
 
         k = pGetVar->get("k");
-        nu = pGetVar->get("nu");
+        //nu = pGetVar->get("nu");
         dt = pGetVar->get("dt");
 
         L = pGetVar->get("L");
         M = pGetVar->get("M");
 
-        d = L / (numberOfBlocks - 1); 	// Distance between blocks in block chain
+        d = L / (blockWidth - 1); 	// Distance between blocks in block chain
 		m = M / numberOfBlocks;
+
+        nu = sqrt(0.1*k*m);
 
         delete pGetVar; //By deleting this pointer the destructor should close the files
 
@@ -56,6 +43,9 @@ double m = M / numBlocks;
 	bool block::returnState() { return false; };
 	void block::connectConnectors(){};
 	double block::returnFricForce(){return 0;};
+	void block::isOneDim(bool _oneDim){};
+	double block::normalForce(){return 0;}
+	double block::returnPusherForce(){return 0;}
 
 
 

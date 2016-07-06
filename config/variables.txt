@@ -9,13 +9,16 @@ tStop .1
 writeFrequency 100
 test 0
 
-#Connector Variables
+#Top Block Variables(0.0714)
+downPushForce 1920
+
+#Connector Variables(0.00714)
 connMass 0.001
 staticCoeff 0.4
 dynamicCoeff 0.17
-N 0.00714
+N .007
 stickTime 0.002
 
-#Pusher Variables
+#Pusher Variables(4e-4)
 vPusher 4e-4
 kPusher 4e6

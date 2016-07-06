@@ -4,11 +4,13 @@
 #include <array>
 #include <memory>
 #include <time.h>
+#include <assert.h>
 
 #include "block.h"
 #include "interiorBlock.h"
 #include "buttomBlock.h"
 #include "buttomLeftBlock.h"
+#include "topBlock.h"
 #include "getVar.h"
 
 using namespace std;
@@ -19,27 +21,13 @@ ofstream outFileForce("output/force.bin", ios::out | ios::binary);
 ofstream outFileState("output/state.bin", ios::out | ios::binary);
 ofstream outFileFriction("output/friction.bin", ios::out | ios::binary);
 ofstream outFileVelocity("output/velocity.bin", ios::out | ios::binary);
+ofstream outFilePusher("output/pusher.bin", ios::out | ios::binary);
 ofstream outFileParameters("output/parameters.txt");
 
 //Some functions
 void writeArrayToFile(ofstream & outFile, double * array, int numBlocks);
 int checkProgress(double time, double tStop, int percent, double currentTime, double start);
-
-/*
-double dt = 1e-7;
-double tStop = 0.01; //orginalt 0.01 g
-double t = 0;
-
-double vPusher = 4e-4;
-double kPusher = 4e6;
-
-double nu = sqrt(0.1e3);    //Dampning coefficient
-double k = 2.3e6; 			// Stiffness between blocks
-double L = 0.14; 			// Physical length of block chain
-double d = L / (numBlocks - 1); 	// Distance between blocks in block chain
-double M = 0.12;
-double m = M / numBlocks;
-*/
+vector<vector<int>> getLayaout(int height, int width);
 
 
 
@@ -66,10 +54,17 @@ int main()
     time_t timer;
     int percent = 0;
     bool isTesting = (pGetVarMain->get("test"));
-    int testTime = 60;
+    int testTime = 10;
+
+    bool isOneDim = false;
+    if (blockHeight == 1){isOneDim = true;} //Checks if the block is only 1 block high(to make sure blocks are not top and bottom)
 
 
-    delete pGetVarMain;
+    //vector<vector<int>> layout;
+    //layout = getLayaout(blockHeight,blockWidth);
+
+
+    delete pGetVarMain; //Closes the files
 
     //Some arrays
     double positions[blockWidth];
@@ -77,7 +72,8 @@ int main()
     double state[blockWidth];
     double friction[blockWidth];
     double velocity[blockWidth];
-
+    //double pusherForce[100000];
+    vector<double> pusherForce;
 
 
 
@@ -102,7 +98,47 @@ int main()
 	{
 		for (int j = 0; j < blockWidth; j++)
 		{
+		    if ((i == (blockHeight - 1)) && !isOneDim)
+            {
 
+                blocks[i][j] = shared_ptr<block>(new top_block);
+                blocks[i][j]->setData(j*d, i*d,j,i);
+
+
+            }
+            else if (i == 0)
+            {
+                if (j == 0)
+                {
+                     blocks[i][j] = shared_ptr<block>(new buttomLeft_block);
+
+
+                     blocks[i][j]->setData(j*d, i*d,j,i);
+                     blocks[i][j]->isOneDim(isOneDim);
+                     blocks[i][j]->connectConnectors();
+
+
+                }
+                else
+                {
+                     blocks[i][j] = shared_ptr<block>(new buttom_block);
+
+
+                     blocks[i][j]->setData(j*d, i*d,j,i);
+                     blocks[i][j]->isOneDim(isOneDim);
+                     blocks[i][j]->connectConnectors();
+
+
+                }
+            }
+            else
+            {
+                blocks[i][j] = shared_ptr<block>(new interior_block);
+
+				blocks[i][j]->setData(j*d, i*d,j,i);
+            }
+
+            /*
 			if ((j > 0 && j < blockWidth - 1) && (i > 0 && i < blockHeight - 1))
 			{
 				blocks[i][j] = shared_ptr<block>(new interior_block);
@@ -111,6 +147,14 @@ int main()
 
 
 			}
+			else if (i == (blockHeight - 2))
+            {
+                if (!isOneDim)
+                {
+                    blocks[i][j] = shared_ptr<block>(new top_block);
+                    blocks[i][j]->setData(j*d, i*d,j,i);
+                }
+            }
 			else if (i == 0 && j == 0)
 			{
 				blocks[i][j] = shared_ptr<block>(new buttomLeft_block);
@@ -128,6 +172,7 @@ int main()
 				blocks[i][j]->connectConnectors();
 			}
 
+            */
 		}
 
 
@@ -144,15 +189,6 @@ int main()
 		}
 	}
 
-
-    /*
-	cout << blocks[0][0]->xPos << "   " << blocks[0][0]->xForce << endl;
-	cout << blocks[0][1]->xPos << "   " << blocks[0][1]->xForce << endl;
-	cout << blocks[0][2]->xPos << "   " << blocks[0][2]->xForce << endl;
-	cout << blocks[0][blockWidth - 2]->xPos << "   " << blocks[0][blockWidth - 2]->xForce << endl;
-	cout << blocks[0][blockWidth - 1]->xPos << "   " << blocks[0][blockWidth - 1]->xForce << endl;
-	cout << endl;
-    */
 
 
     //Main integration loop
@@ -182,6 +218,7 @@ int main()
 		{
 			for (int j = 0; j < blockWidth; j++)
 			{
+
 				blocks[i][j]->calculateForces();
 
 			}
@@ -194,7 +231,10 @@ int main()
 			{
 				blocks[i][j]->integrate();
 
+
+
 			}
+
 		}
 
 
@@ -202,26 +242,24 @@ int main()
 		for (int j = 0; j < blockWidth; j++)
 		{
 			positions[j] = blocks[0][j]->xPos;
-			forces[j] = blocks[0][j]->xForce;
+			forces[j] = blocks[0][j]->normalForce();//yForce;  //Change back to x!
 			velocity[j] = blocks[0][j]->xVel;
 			state[j] = int(blocks[0][j]->returnState());
 			if ((blocks[0][j]->returnFricForce())>-0.005){
                     friction[j] = blocks[0][j]->returnFricForce();
 				}
 				else{friction[j] = -0.005;}
-            /*
-			if (blocks[0][j]->type == blockType::buttom)
-			{
-				state[j] = int(blocks[0][j]->returnState());
-
-			}
-			*/
 
 		}
 
         //Writes the data to files
 		if ((counter%writeFrequency) == 0)
 		{
+
+            //cout << blocks[0][0]->returnPusherForce() << endl;
+            pusherForce.push_back(blocks[0][0]->returnPusherForce());
+
+
 			writeArrayToFile(outFilePositions, positions, blockWidth);
 			writeArrayToFile(outFileForce, forces, blockWidth);
 			writeArrayToFile(outFileState, state, blockWidth);
@@ -234,6 +272,13 @@ int main()
 
 	}
 
+	double pusherArray[int(pusherForce.size())];
+	for (int k = 0; k < pusherForce.size();k++)
+    {
+        pusherArray[k] = pusherForce[k];
+    }
+
+    writeArrayToFile(outFilePusher, pusherArray, int(pusherForce.size()));
 	// Output parameters to file
 	outFileParameters << "nx " << blockWidth << "\n";
 	outFileParameters << "dt " << dt << "\n";
@@ -243,6 +288,12 @@ int main()
 	outFilePositions.close();
 	outFileParameters.close();
 	outFileForce.close();
+	outFileState.close();
+	outFileFriction.close();
+	outFileVelocity.close();
+	outFilePositions.close();
+	outFilePusher.close();
+
 
 
 
@@ -273,4 +324,41 @@ int checkProgress(double time, double tStop, int percent,double curretenTime, do
             return int((time/tStop)*100);
     }
 
+}
+
+
+
+vector<vector<int>> getLayaout(int height,int width)
+{
+    int row;
+    int col;
+    string num;
+
+    ifstream inFileLayout("input/layout.txt"); //, ios::in| ios::binary);
+
+    vector<vector<int>> init;
+
+
+
+	init.resize(height);
+
+	for (int m = 0; m < height; m++)
+	{
+		init[m].resize(width);
+	}
+
+
+    for (int i = 0; i < height; i ++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+
+            inFileLayout >> num;
+            init[i][j] = stoi(num);
+        }
+    }
+
+    inFileLayout.close();
+
+    return init;
 }

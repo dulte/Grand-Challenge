@@ -19,12 +19,19 @@ buttomLeft_block::buttomLeft_block()
 void buttomLeft_block::calculateForces()
 {
 	this->InternalForces();
-	this->xForce += pusherObj->pusherForce(0, this->xPos);
+	pusherForce = pusherObj->pusherForce(0, this->xPos);
+	this->xForce += pusherForce;
+	yForce += normalForce();
     for (shared_ptr<connector> connect : connectors)
 	{
-        fricForce = connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel);
+
+        fricForce = connect->calulateConnectorForce(this->xPos, this->yPos, this->xVel, this->normalForce());
 		xForce += fricForce;
 	}
 	pusherObj->MovePusher();
 }
 
+double buttomLeft_block::returnPusherForce()
+{
+    return pusherObj->pusherForce(0, this->xPos);
+}

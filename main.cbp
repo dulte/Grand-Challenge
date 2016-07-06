@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -22,6 +23,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -32,7 +34,23 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/block.h" />
+		<Unit filename="include/buttomBlock.h" />
+		<Unit filename="include/buttomLeftBlock.h" />
+		<Unit filename="include/connector.h" />
+		<Unit filename="include/getVar.h" />
+		<Unit filename="include/interiorBlock.h" />
+		<Unit filename="include/pusher.h" />
+		<Unit filename="include/topBlock.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/block.cpp" />
+		<Unit filename="src/buttomBlock.cpp" />
+		<Unit filename="src/buttomLeftBlock.cpp" />
+		<Unit filename="src/connector.cpp" />
+		<Unit filename="src/getVar.cpp" />
+		<Unit filename="src/interiorBlock.cpp" />
+		<Unit filename="src/pusher.cpp" />
+		<Unit filename="src/topBlock.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

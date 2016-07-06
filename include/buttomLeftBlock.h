@@ -19,10 +19,12 @@ class buttomLeft_block :public buttom_block
 {
 public:
 	double pusherPosition;
+	double pusherForce;
 	pusher *pusherObj = new pusher();
 
 	buttomLeft_block();
 	void calculateForces();
+	double returnPusherForce();
 	//double pusherForce(double kPusher, int komponent);
 	//void MovePusher();
 
